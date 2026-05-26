@@ -1088,10 +1088,15 @@ class test_Channel:
         assert (password, path) == (None, '/var/run/redis.sock')
 
     def test_connparams_health_check_interval_not_supported(self):
+        # Simulate a legacy/custom connection class that has no **kwargs and
+        # therefore genuinely cannot accept health_check_interval.
+        class _LegacyConnection:
+            def __init__(self, host, port):
+                pass
+
         with patch('kombu.transport.redis.Channel._create_client'):
             with Connection('redis+socket:///tmp/redis.sock') as conn:
-                conn.default_channel.connection_class = \
-                    Mock(name='connection_class')
+                conn.default_channel.connection_class = _LegacyConnection
                 connparams = conn.default_channel._connparams()
                 assert 'health_check_interval' not in connparams
 
@@ -2295,7 +2300,8 @@ class test_RedisSentinel:
                 min_other_sentinels=0, password=None, sentinel_kwargs=None,
                 socket_connect_timeout=None, socket_keepalive=None,
                 socket_keepalive_options=None, socket_timeout=None,
-                username=None, retry_on_timeout=None, client_name=None)
+                username=None, retry_on_timeout=None, client_name=None,
+                health_check_interval=25)
 
             master_for = patched.return_value.master_for
             master_for.assert_called()
@@ -2321,7 +2327,8 @@ class test_RedisSentinel:
                 min_other_sentinels=0, password=None, sentinel_kwargs=None,
                 socket_connect_timeout=None, socket_keepalive=None,
                 socket_keepalive_options=None, socket_timeout=None,
-                username=None, retry_on_timeout=None, client_name=None)
+                username=None, retry_on_timeout=None, client_name=None,
+                health_check_interval=25)
 
             master_for = patched.return_value.master_for
             master_for.assert_called()
@@ -2352,7 +2359,8 @@ class test_RedisSentinel:
                 min_other_sentinels=0, password=None, sentinel_kwargs=None,
                 socket_connect_timeout=None, socket_keepalive=None,
                 socket_keepalive_options=None, socket_timeout=None,
-                username=None, retry_on_timeout=None, client_name='kombu-worker')
+                username=None, retry_on_timeout=None, client_name='kombu-worker',
+                health_check_interval=25)
 
             master_for = patched.return_value.master_for
             master_for.assert_called()
@@ -2382,7 +2390,8 @@ class test_RedisSentinel:
                 sentinel_kwargs=None,
                 socket_connect_timeout=None, socket_keepalive=None,
                 socket_keepalive_options=None, socket_timeout=None,
-                username='myuser', retry_on_timeout=None, client_name=None)
+                username='myuser', retry_on_timeout=None, client_name=None,
+                health_check_interval=25)
 
             master_for = patched.return_value.master_for
             master_for.assert_called()
@@ -2412,7 +2421,8 @@ class test_RedisSentinel:
                 sentinel_kwargs=None,
                 socket_connect_timeout=None, socket_keepalive=None,
                 socket_keepalive_options=None, socket_timeout=None,
-                username=None, retry_on_timeout=None, client_name=None)
+                username=None, retry_on_timeout=None, client_name=None,
+                health_check_interval=25)
 
             master_for = patched.return_value.master_for
             master_for.assert_called()
