@@ -122,3 +122,48 @@ Verification remains library-level. No real-worker recovery, historical-cause
 certainty, fresh public fetch, application install, CI/Docker proof or production
 activation is claimed. Independent implementation review and attestation follow
 against the exact local candidate before any named publication request.
+
+## Independent implementation review 001: fifth fix authorized
+
+The independent reviewer verified all six changed paths and faithful upstream
+provenance, but blocked attestation/publication with I01-001. The async connection
+override rejects redis-py 7.3.0's disconnect keyword arguments, turning a normal
+connection failure into TypeError. The health-check fix makes one such path live.
+Reproduced the exact error on the installed four-fix candidate without opening a
+socket. The 144 green cases did not cover that call; they are insufficient for
+publication. No artifact has been attested or published.
+
+Recorded the material scope decision, then the user explicitly chose **add the
+fifth upstream fix**, `d9c985fee043264d3736f52d92a9cfd31b84c272`, plus its regression.
+No publication/deployment approval was granted. Revise this design/plan and the
+parent dependency scope through independent plan review before applying it.
+Retain the whole upstream cherry-pick including its env-gated integration test
+for provenance; no ambient integration run is authorized. The new unit case joins
+the prospective red manifest and all wheel/identity/green proof is repeated.
+The application's actual prefork blackhole proof remains mandatory; unrelated
+idle/overdue BRPOP changes are not silently added or declared unnecessary.
+
+## Revised plan 003 remediation without another scope expansion
+
+Review 003 accepted the fifth commit/provenance and 18-red/127-green arithmetic,
+but identified the native retry-enabled stale-registration path (#2630), missing
+real-path green reproduction, and the exact TypeError red criterion. Accept all
+three for fix_now. The review's material question is resolved by existing parent
+authorization: its approved transport resolver already fixes
+`retry_on_timeout=False` and omits `retry_on_error`. No new user decision or sixth
+fix is needed to select that already-approved no-command-retry policy.
+
+Verified actual async native-pool construction with that policy gives zero
+retries and an empty retry-on-error list. Running the real `check_health()` /
+Retry / `_ping_failed` path on the installed four-fix wheel with only `_send_ping`
+simulating failure reproduces the keyword TypeError and leaves its simulated
+socket open; every real socket connect is forbidden. An initial diagnostic fed
+pool-only max_connections directly to the Connection constructor and failed
+setup; corrected to the actual ConnectionPool.make_connection path. That setup
+failure is not counted as defect evidence.
+
+The revised plan requires this same real path green on the five-fix wheel, exact
+node-specific TypeError matching, a documented retry-enabled limitation, and the
+parent's actual idle/server-closed proof before operational use. Scope remains
+the five user-approved commits. Resubmit this concrete correction through plan
+review; the fifth source change is still unapplied.

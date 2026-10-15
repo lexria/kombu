@@ -3,16 +3,16 @@
 Date: 2026-10-15. Tier A. Independent plan review before source changes;
 independent implementation review and exact-commit attestation before publication.
 
-1. Verify the stable tag and four upstream commit identities in the design.
+1. Verify the stable tag and five upstream commit identities in the design.
    Record the independent plan result and dispositions before applying source.
 2. Provision a fork-owned Python 3.14 test environment; do not modify another
    project's virtualenv. Use pytest 8.4.2, pytest-timeout, pytest-freezer and
    redis-py 7.3.0 plus the upstream owner's actual fixture dependencies. Select
    only `t/unit/transport/test_redis.py`, not the entire library suite.
-3. Apply the four single-parent upstream commits with provenance (`cherry-pick -x`),
+3. Apply the five single-parent upstream commits with provenance (`cherry-pick -x`),
    in the order in the design. Resolve context against stable behavior rather
    than importing unrelated newer source. Stop on a newly required runtime change
-   outside the four fixes and re-review the scope. Preserve the release version.
+   outside the five fixes and re-review the scope. Preserve the release version.
    #2548's Redis requirements hunk conflicts with stable: resolve it to exactly
    `redis>=4.5.2,!=4.5.5,!=5.0.2,<8.0.0`, preserving the floor/exclusions and
    changing only the cap. Record that deliberate stable-context resolution.
@@ -30,7 +30,9 @@ independent implementation review and exact-commit attestation before publicatio
    candidate runtime without breaking the owner's fake-descriptor setup. Record
    redis-py version and imported paths in each run.
    A collection/import/setup error never counts as red; require only the named
-   assertion failures or targeted KeyError/ConnError below, with all other cases
+   assertion failures or targeted KeyError/ConnError below, plus only the new
+   disconnect node's exact `TypeError: Channel._connparams.<locals>.Connection.disconnect()
+   got an unexpected keyword argument 'error'`, with all other cases
    green. Expand parametrized IDs via collect-only and fix the expected set
    before running the red comparison.
 
@@ -42,6 +44,30 @@ independent implementation review and exact-commit attestation before publicatio
    | 2498 | `test_Channel::test_register_with_event_loop_stores_trefs_on_cycle`; `...cancels_stale_trefs_on_reconnect`; `test_MultiChannelPoller::test_maybe_restore_messages_swallows_connection_error`; `...test_maybe_check_subclient_health_swallows_connection_error`. |
    | 2548 | `test_Channel::test_connparams_health_check_interval_supported` (already fails in the stable baseline with redis-py 7.3.0); `test_RedisSentinel::test_getting_master_from_sentinel` and `_single_node`, `_with_client_name`, `_with_acl_credentials`, `_with_password_only` variants. |
    | 2561 | `test_MultiChannelPoller::test_on_readable_ignores_unmapped_fd`; `test_MultiChannelPoller::test_handle_event_ignores_unmapped_fd`. |
+   | disconnect kwargs | `test_Channel::test_redis_disconnect_forwards_keyword_arguments`. |
+
+   Before applying the fifth fix, obtain independent review of this revised plan
+   and the consuming application's matching dependency-scope update. Preserve
+   the four-fix candidate and its failed implementation review. Retain the fifth
+   commit's upstream env-gated integration hunk without running it against an
+   ambient broker. Collect the expanded unit owner and prospectively extend the
+   manifest to 18 expected failures and 127 green controls. Repeat stable-runtime
+   red, candidate-wheel green, both URL diagnostics, source-hash assertions and
+   built metadata checks. The reproduced keyword TypeError is additional targeted
+   red evidence, not a replacement for that complete comparison.
+   Also repeat that reproduction as green through real redis-py 7.3.0
+   `Connection.check_health()`/Retry/`_ping_failed`, obtaining the actual async
+   connection from the `_connparams(asynchronous=True)` native connection pool.
+   Simulate only the PING failure and forbid socket connects. Use the parent's
+   already-approved `retry_on_timeout=False`, absent `retry_on_error`; assert
+   zero native command retries and an empty retry-on-error list. The four-fix
+   wheel must reproduce the keyword TypeError without closing the simulated
+   socket. The five-fix wheel must close it and surface the original
+   `redis.exceptions.ConnectionError`, never TypeError. A forwarding assertion
+   against a mock base class alone cannot close I01-001.
+   Parent scope includes one actual server-closed idle-connection case after its
+   health check comes due under this same policy. Native retry-enabled behavior
+   and #2630 are explicitly outside this approved artifact, not silently healthy.
 
    Expected-green controls include loop_cleanup[fds1], fileno_oserror,
    fd_not_in_map, fileno_negative, the maybe_restore_messages happy/no-active paths,
