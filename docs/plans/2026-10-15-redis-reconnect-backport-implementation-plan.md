@@ -23,10 +23,12 @@ independent implementation review and exact-commit attestation before publicatio
    the red run or a cached stable package for green.
    Install stable `kombu==5.6.2` without its Redis extra and `redis==7.3.0`
    separately. Establish the unchanged owner baseline first. For the new-test red
-   comparison, run from a neutral directory, preload installed `kombu` and
-   `kombu.transport.redis`, assert both source paths, then invoke pytest on the
-   candidate's test owner. This prevents root conftest path insertion choosing
-   the candidate runtime. Record redis-py version and imported paths in each run.
+   comparison, run from a neutral directory and preload the installed `kombu`
+   package hierarchy, asserting its source path. Leave Redis transport loading
+   until the unit module installs its fake poller; assert that transport's path
+   at collection finish. This prevents root conftest path insertion choosing the
+   candidate runtime without breaking the owner's fake-descriptor setup. Record
+   redis-py version and imported paths in each run.
    A collection/import/setup error never counts as red; require only the named
    assertion failures or targeted KeyError/ConnError below, with all other cases
    green. Expand parametrized IDs via collect-only and fix the expected set
@@ -38,7 +40,7 @@ independent implementation review and exact-commit attestation before publicatio
    | --- | --- |
    | 2492 | `test_Channel::test_register_with_event_loop__on_disconnect__loop_cleanup[fds0]`; `test_Channel::test_register_with_event_loop__on_disconnect__removes_sock`; `...__sock_no_fileno`; `...__sock_none_prunes`; `...__sock_none_subclient` (same class/method prefix). |
    | 2498 | `test_Channel::test_register_with_event_loop_stores_trefs_on_cycle`; `...cancels_stale_trefs_on_reconnect`; `test_MultiChannelPoller::test_maybe_restore_messages_swallows_connection_error`; `...test_maybe_check_subclient_health_swallows_connection_error`. |
-   | 2548 | `test_RedisSentinel::test_getting_master_from_sentinel` and `_single_node`, `_with_client_name`, `_with_acl_credentials`, `_with_password_only` variants. |
+   | 2548 | `test_Channel::test_connparams_health_check_interval_supported` (already fails in the stable baseline with redis-py 7.3.0); `test_RedisSentinel::test_getting_master_from_sentinel` and `_single_node`, `_with_client_name`, `_with_acl_credentials`, `_with_password_only` variants. |
    | 2561 | `test_MultiChannelPoller::test_on_readable_ignores_unmapped_fd`; `test_MultiChannelPoller::test_handle_event_ignores_unmapped_fd`. |
 
    Expected-green controls include loop_cleanup[fds1], fileno_oserror,
