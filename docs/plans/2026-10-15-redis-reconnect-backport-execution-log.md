@@ -224,3 +224,18 @@ Changed-file flake8 on transport, unit owner and retained integration owner plus
 diff whitespace checks pass. No actual prefork recovery, public frozen fetch,
 CI/Docker fetch or production success is claimed. Resubmit the exact five-fix
 artifact for independent implementation review; I01-001 is not author-closed.
+
+## Implementation approval and publication boundary
+
+Independent implementation review 002 inspected all seven paths, verified the
+fifth patch byte-for-byte against upstream, resolved I01-001, and approved with
+no new findings. It finalized automatically and is attested without differences
+to `7e05332503de03d71f74dae7e53130e73d015be4`. The reviewer could not rerun its
+focused command under its read-only permission mode and explicitly relied on
+the author's recorded runs plus source inspection; no reviewer-run test is claimed.
+
+This final entry is approval bookkeeping only. Attest its commit with only this
+execution-log path allowed. The candidate is ready for a separately authorized
+public fork/push request, not for production use. The parent still owes its
+frozen public fetch, full implementation, prefork/coverage/alert proof and
+implementation review. No publication, tag, release or deployment has occurred.
