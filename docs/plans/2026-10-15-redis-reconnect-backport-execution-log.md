@@ -167,3 +167,60 @@ node-specific TypeError matching, a documented retry-enabled limitation, and the
 parent's actual idle/server-closed proof before operational use. Scope remains
 the five user-approved commits. Resubmit this concrete correction through plan
 review; the fifth source change is still unapplied.
+
+## Five-fix implementation and repeated proof
+
+Fork plan 004 approved and finalized without new findings, attested with zero
+differences to `e9a8f40ef4e914e917e7d24ac27687b6c4d0da36`. The parent independently
+approved/finalized its revised five-fix and narrower recovery proof before source
+application. Its user-selected proof does not claim userspace-proxy blackhole or
+end-to-end kernel packet-loss recovery; the design's references now match that
+parent-owned boundary. No sixth upstream fix is added.
+
+Applied the whole upstream d9c985fe commit cleanly with `cherry-pick -x`, including
+both regressions and original authorship, at source checkpoint
+`c8950e82d644b67856b69ec434a3d707a90e2e35`. The env-gated integration hunk is retained
+but not run against an ambient endpoint. Source/test scope is the reviewed four
+files plus dated provenance documents.
+
+The expanded prospective manifest named 18 expected failures and the same 127
+green controls before execution. The new forwarding node requires the exact
+qualified keyword TypeError message; the other 17 retain their measured failure
+kinds. Installed stable 5.6.2 against candidate tests produced **18 failed,
+127 passed in 38.80s**, exit 1. Parsed JUnit matched every node and expected
+failure kind/message, with zero errors/skips or unexpected failures.
+
+Rebuilt the wheel, checked its METADATA again for exactly the approved Redis
+specifier set and 7.3.0 acceptance, then reinstalled it without changing other
+packages. The identical guarded owner produced **145 passed in 34.88s**, exit 0;
+JUnit confirms zero failures/errors/skips. Runtime source path/hash is asserted
+at collection finish. The installed five-fix transport SHA256 is
+`c8535772cc9ad7fbbf4ae071fce636d37620ce5d5635dde8632358cac2753a9b`.
+
+The no-network diagnostic uses actual `_connparams(asynchronous=True)`, native
+ConnectionPool.make_connection and real redis-py 7.3.0 retry/failure handling,
+simulating only a health PING failure or socket-connect timeout. Both pools have
+zero command retries and an empty retry-on-error list. On archived four-fix
+source (hash-asserted), both callbacks produce the exact keyword TypeError.
+On the installed five-fix wheel, health failure closes its simulated socket,
+invokes actual channel cleanup and raises ConnectionError; connect timeout
+invokes cleanup and raises the normal recoverable redis TimeoutError. Plain and
+SSL async parameters both preserve health interval 30.
+
+Diagnostic refinement: raw ConnectionRefusedError is normalized outside the
+native retry callback, so it is not evidence of the keyword callback. The first
+diagnostic also reused a channel already unregistered by the preceding case.
+Use a fresh channel per case and a native retry-supported socket timeout; no
+such setup failure counts as fix evidence. A refused-worker drill can still be
+recovery evidence without proving the fifth fix, as the parent plan records.
+
+The parent also owns an actual isolated-Redis comparison: after closing only its
+identified client connection and waiting beyond its health interval, the four-fix
+candidate raises the exact TypeError; the five-fix wheel raises ConnectionError
+with the socket closed. Both have zero native retries; fixture cleanup runs in
+finally. This supplements, not replaces, the parent's pending prefork proof.
+
+Changed-file flake8 on transport, unit owner and retained integration owner plus
+diff whitespace checks pass. No actual prefork recovery, public frozen fetch,
+CI/Docker fetch or production success is claimed. Resubmit the exact five-fix
+artifact for independent implementation review; I01-001 is not author-closed.

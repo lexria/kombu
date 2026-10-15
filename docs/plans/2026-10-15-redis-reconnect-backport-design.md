@@ -26,7 +26,7 @@ with the whole cherry-pick. The env-gated upstream integration owner is retained
 for provenance but is not run against an ambient Redis endpoint. The consuming
 application still owns its isolated prefork recovery/no-duplicate proof. No other
 upstream idle/overdue BRPOP fixes are approved. That proof must demonstrate
-blackhole recovery with the selected artifact and bounded transport policy before
+reset/refused-reconnect and idle-health recovery with the selected artifact and bounded transport policy before
 operational use; a failure cannot be waived by these green library unit tests.
 
 The consuming application's already-approved command policy is
@@ -66,7 +66,12 @@ Retain independent installed-stack checks with redis-py 7.3.0 for plain and SSL
 effective health-check parameters. Red diagnostics against unpatched 5.6.2 prove
 the latent defects; green library tests do not prove the historical incident or
 the real-worker reconnect requirement. The consuming application owns its isolated
-Redis/prefork disconnect/blackhole/no-duplicate tests before operational use.
+Redis/prefork disconnect/refusal/idle-health/no-duplicate tests before operational use.
+The user's chosen application proof reads actual socket keepalive settings but
+does not claim end-to-end silent packet-loss recovery; a userspace proxy cannot
+exercise kernel keepalive. A connected but unresponsive server may require
+operator recovery. The parent proof-policy revision passed its independent plan
+gate before this fifth fix was applied; the fork's library proof is unchanged.
 
 No public fork, push, tag, release, dependency deployment or production mutation
 is authorized by this checkpoint. Prepare a local immutable artifact, obtain
